@@ -1,0 +1,6 @@
+google-ads==15.0.0
+google-api-python-client==2.37.0
+google-cloud-bigquery==2.34.0
+aiohttp==3.6.2
+google-cloud-storage==2.1.0
+google-cloud-firestore==2.3.4

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-if [ $# != 3 ]; then
+if [ $# != 4 ]; then
     echo "Usage: $0 gcp_project_id bucket_name region"
     exit 1
 fi
@@ -23,9 +23,11 @@ echo "Move to megalista_dataflow folder"
 cd megalista_dataflow
 echo "Configuration GCP project in gcloud"
 gcloud config set project "$1"
+echo "Pre-download all runtime dependencies"
+./wheels/create-wheels.sh
 echo "Build Dataflow metadata"
 python3 -m pip install --user -q -r requirements.txt
-python3 -m main --runner DataflowRunner --project "$1" --gcp_project_id "$1" --temp_location "gs://$2/tmp/" --region "$3" --setup_file ./setup.py --template_location "gs://$2/templates/megalista" --num_workers 1 --autoscaling_algorithm=NONE
+python3 -m main --runner DataflowRunner --project "$1" --gcp_project_id "$1" --temp_location "gs://$2/tmp/" --region "$3" --setup_file ./setup.py --template_location "gs://$2/templates/megalista" --num_workers 1 --autoscaling_algorithm=NONE --service_account_email "$4"
 echo "Copy megalista_medata to bucket $2"
 gsutil cp megalista_metadata "gs://$2/templates/megalista_metadata"
 cd ..
